@@ -15,7 +15,7 @@ import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+import java.util.StringJoiner;
 
 @ApplicationScoped
 public class KeycloakRegisterUtil {
@@ -25,9 +25,18 @@ public class KeycloakRegisterUtil {
     @Inject
     KeycloakProps keycloakProps;
 
-    public boolean isIndividualRegisteredAlready(UsersResource usersResource, String username, String email) {
-        return !(usersResource.searchByEmail(username, true).isEmpty() &&
-                usersResource.searchByEmail(email, true).isEmpty());
+    public String checkIndividualRegisteredAlready(UsersResource usersResource, String username, String email) {
+        StringJoiner sj = new StringJoiner(",");
+
+        if (!usersResource.searchByUsername(username, true).isEmpty()) {
+            sj.add("username");
+        }
+
+        if (!usersResource.searchByEmail(email, true).isEmpty()) {
+           sj.add("email");
+        }
+
+        return sj.toString();
     }
     public String register(RegistrationForm registrationForm) throws RegistrationFailed {
 
@@ -53,20 +62,23 @@ public class KeycloakRegisterUtil {
         RealmResource realmResource =  keycloakAdminClient.getKeycloak().realm(keycloakProps.realm());
         UsersResource usersResource = realmResource.users();
 
-        if (isIndividualRegisteredAlready(usersResource, registrationForm.getLogin(), registrationForm.getEmail())) {
-            throw new IndividualRegisteredAlready("Пользователь уже существует");
+        String conflictFields = checkIndividualRegisteredAlready(usersResource, registrationForm.getLogin(), registrationForm.getEmail());
+
+        if (!conflictFields.isEmpty()) {
+            throw new IndividualRegisteredAlready(conflictFields);
         }
 
         // Create user (requires manage-users role)
         try (Response response = usersResource.create(user)) {
-            if (response.getStatus() != Response.Status.CREATED.getStatusCode()) {
-                System.out.println("RESPONSE STATUS = " + response.getStatus());
-                throw new RegistrationFailed();
+            switch (response.getStatus()) {
+                case 201 -> {
+                    // TODO: рассмотреть варианты получше как достать id
+                    String userId = response.getLocation().getPath().replaceAll(".*/([^/]+)$", "$1");
+                    return userId;
+                }
+                case 409 -> throw new IndividualRegisteredAlready("User is registered already.");
+                default -> throw new RegistrationFailed("Register error. Code: " + response.getStatus());
             }
-            // TODO: рассмотреть варианты получше
-            String userId = response.getLocation().getPath().replaceAll(".*/([^/]+)$", "$1");
-
-            return userId;
         }
     }
 }

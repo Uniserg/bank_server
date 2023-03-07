@@ -1,22 +1,15 @@
 package com.serguni.repositories;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.serguni.GraphDriver;
+
 import com.serguni.models.Individual;
+import com.serguni.utils.CamelCaseObjectMapperUtil;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 @ApplicationScoped
-public class IndividualRepository {
+public class IndividualRepository extends AbstractRepository {
 
-    @Inject
-    GraphDriver gd;
-
-    @Inject
-    ObjectMapper om;
-
-    public Individual create(Individual individual) {
+    public void create(Individual individual) {
         gd.g
             .addV("Individual")
             .property("sub", individual.getSub())
@@ -25,17 +18,16 @@ public class IndividualRepository {
             .property("middleName", individual.getMiddleName())
             .property("passport", individual.getPassport())
             .property("inn", individual.getInn()).next();
-
-        return individual;
     }
 
-    public Individual getById(long individualId) {
-        return gd.g
-                .V(individualId)
+    public Individual getBySub(String individualSub) {
+
+        var individualMap = gd.g
+                .V()
+                .has("sub", individualSub)
                 .elementMap()
-                .toStream()
-                .map(c -> om.convertValue(c, Individual.class))
-                .findFirst()
-                .orElse(null);
+                .next();
+
+        return CamelCaseObjectMapperUtil.convertValue(individualMap, Individual.class);
     }
 }

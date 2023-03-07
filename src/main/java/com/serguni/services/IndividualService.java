@@ -3,9 +3,7 @@ package com.serguni.services;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.serguni.dto.RegistrationForm;
-import com.serguni.exceptions.IndividualRegisteredAlready;
 import com.serguni.exceptions.InvalidRegistrationForm;
-import com.serguni.exceptions.RegistrationFailed;
 import com.serguni.models.Individual;
 import com.serguni.repositories.IndividualRepository;
 import com.serguni.utils.EmailValidationUtil;
@@ -25,7 +23,7 @@ public class IndividualService {
     IndividualRepository individualRepository;
 
     private String checkPhoneNumber(String phoneNumber) {
-        String errMsg = "Неверный номер телефона.\n";
+        String errMsg = "Invalid phone number.\n";
 
         try {
             if (!PhoneValidationNumberUtil.isPhoneNumberValid(phoneNumber)) {
@@ -39,14 +37,18 @@ public class IndividualService {
 
     private String checkEmail(String email) {
         if (!EmailValidationUtil.isEmailValid(email)) {
-            return "Неверный email.";
+            return "Invalid email.";
         }
         return "";
     }
 
     public Individual register(RegistrationForm registrationForm) {
+
+        System.out.println(registrationForm);
+
         String errMsg = checkEmail(registrationForm.getEmail()) +
                 checkPhoneNumber(registrationForm.getPhoneNumber());
+        System.out.println(errMsg);
 
         if (!errMsg.isEmpty()) {
             throw new InvalidRegistrationForm(errMsg);
@@ -56,6 +58,11 @@ public class IndividualService {
         Individual individual = om.convertValue(registrationForm, Individual.class);
         individual.setSub(sub);
 
-        return individualRepository.create(individual);
+        individualRepository.create(individual);
+        return individual;
+    }
+
+    public Individual getBySub(String sub) {
+        return individualRepository.getBySub(sub);
     }
 }

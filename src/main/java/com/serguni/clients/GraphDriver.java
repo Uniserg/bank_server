@@ -1,4 +1,4 @@
-package com.serguni;
+package com.serguni.clients;
 
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 
