@@ -20,7 +20,7 @@ public class DebitCardService {
     ProductService productService;
 
 
-    public Stream<DebitCard> getAllByUserSub(String userSub) {
-        return debitCardRepository.getAllByUserSub(userSub);
+    public Stream<DebitCard> getAllByUserSub(String userSub, int skip, int limit) {
+        return debitCardRepository.getAllByUserSub(userSub, skip, limit);
     }
 }

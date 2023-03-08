@@ -13,7 +13,7 @@ import static org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.select
 @ApplicationScoped
 public class DebitCardRepository extends AbstractRepository {
 
-    public Stream<DebitCard> getAllByUserSub(String userSub) {
+    public Stream<DebitCard> getAllByUserSub(String userSub, int skip, int limit) {
         var cards = gd.g
                 .V()
                 .match(
@@ -28,6 +28,8 @@ public class DebitCardRepository extends AbstractRepository {
                 .by(select("card").values("expirationDate"))
                 .by(select("card").values("cvv"))
                 .by(select("card").values("isActive"))
+                .skip(skip)
+                .limit(limit)
                 .toStream();
 
         return cards.map((c) -> CamelCaseObjectMapperUtil.convertValue(c, DebitCard.class));

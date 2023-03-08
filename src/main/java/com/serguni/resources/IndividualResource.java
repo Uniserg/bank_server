@@ -77,7 +77,19 @@ public class IndividualResource {
 
     @GET
     @Path("/{user_sub}/debit_cards")
-    public Multi<DebitCard> getDebitCards(@PathParam("user_sub") String userSub) {
-        return Multi.createFrom().items(debitCardService.getAllByUserSub(userSub));
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Multi<DebitCard> getDebitCards(@PathParam("user_sub") String userSub,
+                                          @QueryParam("skip") Integer skip,
+                                          @QueryParam("limit") Integer limit) {
+        if (skip == null) {
+            skip = 0;
+        }
+
+        if (limit == null) {
+            limit = -1;
+        }
+
+        return Multi.createFrom().items(debitCardService.getAllByUserSub(userSub, skip, limit));
     }
 }
