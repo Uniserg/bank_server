@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Map;
+
 @Getter
 @Setter
 public class BIK {
@@ -15,6 +17,8 @@ public class BIK {
     public enum CountryCode {
         RUSSIA(4);
 
+        public static final Map<Integer,CountryCode> CODES = Map.of(4, RUSSIA);
+
         private final int code;
     }
 
@@ -23,6 +27,8 @@ public class BIK {
         MOSCOW(45);
 
         private final int code;
+
+        public static final Map<Integer,RegionCode> CODES = Map.of(45, MOSCOW);
 
         RegionCode(int code) {
             this.code = code;
@@ -58,12 +64,21 @@ public class BIK {
 
     @Override
     public String toString() {
-        return String.format("%02d%02d%02d%02d",
+        return String.format("%02d%02d%02d%03d",
                 countryCode.getCode(),
                 regionCode.getCode(),
                 centerBankBranch,
                 bankNumber
         );
+    }
+
+    public static BIK parse(String bikStr) {
+        CountryCode countryCode = CountryCode.CODES.get(Integer.parseInt(bikStr.substring(0, 2)));
+        RegionCode regionCode = RegionCode.CODES.get(Integer.parseInt(bikStr.substring(2, 4)));
+        int centerBankBranch = Integer.parseInt(bikStr.substring(4, 6));
+        int bankNumber = Integer.parseInt(bikStr.substring(6, 9));
+
+        return new BIK(countryCode, regionCode, centerBankBranch, bankNumber);
     }
 
     public static boolean isValidCenterBankBranch(int rkcPrefix) {

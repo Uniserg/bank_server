@@ -2,7 +2,6 @@ package com.serguni.models;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.annotation.JsonValue;
 import com.serguni.models.requisites.CardNumber;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +17,8 @@ public class DebitCard {
     private short cvv;
     private boolean isActive;
     private String productName;
+
+    private float balance;
 
     public DebitCard() {
     }

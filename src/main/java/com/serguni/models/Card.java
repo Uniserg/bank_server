@@ -1,7 +1,6 @@
 package com.serguni.models;
 
 import com.serguni.models.requisites.CardNumber;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 

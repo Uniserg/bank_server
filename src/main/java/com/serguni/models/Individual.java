@@ -5,10 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Individual {
-    private String sub;
-    private String lastName;
-    private String firstName;
+public class Individual extends Profile {
     private String middleName;
     private String passport;
     private String phoneNumber;

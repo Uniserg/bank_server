@@ -1,6 +1,6 @@
 package com.serguni.services;
 
-import com.serguni.models.ProductRequest;
+import com.serguni.models.ProductOrder;
 import com.serguni.repositories.AccountRequestRepository;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -12,8 +12,8 @@ public class AccountRequestService {
     @Inject
     AccountRequestRepository accountRequestRepository;
 
-    public void create(ProductRequest productRequest) {
-        accountRequestRepository.create(productRequest);
+    public void create(ProductOrder productOrder) {
+        accountRequestRepository.create(productOrder);
     }
 
     public void confirm(long accountRequestId) {

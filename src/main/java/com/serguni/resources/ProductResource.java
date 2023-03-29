@@ -5,6 +5,7 @@ import com.serguni.services.ProductService;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -18,7 +19,7 @@ public class ProductResource {
 
 
     @POST
-//    @RolesAllowed("general-manager")
+    @RolesAllowed("general-manager")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.WILDCARD)
     public Uni<Response> create(Product product) {
@@ -27,6 +28,7 @@ public class ProductResource {
     }
 
     @GET
+    @Produces(MediaType.APPLICATION_JSON)
     public Multi<Product> getAll(@QueryParam("skip") Integer skip, @QueryParam("limit") Integer limit) {
         if (skip == null) {
             skip = 0;
@@ -36,6 +38,8 @@ public class ProductResource {
             limit = -1;
         }
 
-        return Multi.createFrom().items(productService.getAll(skip, limit));
+        Integer finalSkip = skip;
+        Integer finalLimit = limit;
+        return Multi.createFrom().items(() -> productService.getAll(finalSkip, finalLimit));
     }
 }

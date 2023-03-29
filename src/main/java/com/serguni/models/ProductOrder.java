@@ -8,23 +8,25 @@ import java.util.Map;
 
 @Getter
 @Setter
-public class ProductRequest {
+public class ProductOrder {
 
     @Getter
-    public enum ProductRequestStatus {
+    public enum ProductOrderStatus {
         CONFIRM_AWAIT(0),
         IN_PROGRESS(1),
-        COMPLETED(2);
+        COMPLETED(2),
+        REFUSED(3);
 
-        public static final Map<Integer, ProductRequestStatus> CODES = Map.of(
+        public static final Map<Integer, ProductOrderStatus> CODES = Map.of(
                 0, CONFIRM_AWAIT,
                 1, IN_PROGRESS,
-                2, COMPLETED
+                2, COMPLETED,
+                3, REFUSED
         );
 
         private final int code;
 
-        ProductRequestStatus(int code) {
+        ProductOrderStatus(int code) {
             this.code = code;
         }
     }
@@ -34,5 +36,6 @@ public class ProductRequest {
     private String productName;
     private String address;
     private Date scheduledDate;
-    private ProductRequestStatus status;
+    private Date createdAt;
+    private ProductOrderStatus status;
 }

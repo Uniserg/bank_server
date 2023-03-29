@@ -56,7 +56,7 @@ public class CurrentAccount {
         RUR(810);
 
         private final int code;
-        public static final Map<Integer, UnitCode> CODES = Map.of(17, RUR);
+        public static final Map<Integer, UnitCode> CODES = Map.of(810, RUR);
 
         UnitCode(int code) {
             if (code < 1 || code > 999) {
@@ -131,6 +131,8 @@ public class CurrentAccount {
                 bik
                 );
 
+        System.out.println(currentAccount);
+        System.out.println(accountNumber);
         if (currentAccount.getControlSum() != Integer.parseInt(accountNumber.substring(8, 9))) {
             throw new RuntimeException(); // TODO: сделать тип ошибки
         }
@@ -145,5 +147,22 @@ public class CurrentAccount {
                 unitCode.getCode(),
                 controlSum,
                 accountNumber);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(
+                new CurrentAccount(
+                        FirstOrder.INDIVIDUAL,
+                        SecondOrder.CARD,
+                        UnitCode.RUR,
+                        58350828,
+                        new BIK(
+                                BIK.CountryCode.RUSSIA,
+                                BIK.RegionCode.MOSCOW,
+                                52,
+                                974
+                        )
+                )
+        );
     }
 }

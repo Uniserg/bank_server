@@ -49,7 +49,6 @@ public class KeycloakRegisterUtil {
         user.setEmail(registrationForm.getEmail());
         user.setAttributes(Collections.singletonMap("phoneNumber", List.of(registrationForm.getPhoneNumber())));
 
-
         // Create credentials
         CredentialRepresentation password = new CredentialRepresentation();
         password.setTemporary(false);
@@ -61,6 +60,7 @@ public class KeycloakRegisterUtil {
         // Get realm
         RealmResource realmResource =  keycloakAdminClient.getKeycloak().realm(keycloakProps.realm());
         UsersResource usersResource = realmResource.users();
+
 
         String conflictFields = checkIndividualRegisteredAlready(usersResource, registrationForm.getLogin(), registrationForm.getEmail());
 
@@ -74,6 +74,14 @@ public class KeycloakRegisterUtil {
                 case 201 -> {
                     // TODO: рассмотреть варианты получше как достать id
                     String userId = response.getLocation().getPath().replaceAll(".*/([^/]+)$", "$1");
+
+                    usersResource
+                            .get(userId)
+                            .roles()
+                            .realmLevel()
+                            .add(List.of(realmResource.roles().get("client").toRepresentation())
+                            );
+
                     return userId;
                 }
                 case 409 -> throw new IndividualRegisteredAlready("User is registered already.");

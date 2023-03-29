@@ -1,6 +1,6 @@
 package com.serguni.repositories;
 
-import com.serguni.models.ProductRequest;
+import com.serguni.models.ProductOrder;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.util.Date;
@@ -8,15 +8,15 @@ import java.util.Date;
 @ApplicationScoped
 public class AccountRequestRepository extends AbstractRepository {
 
-    public void create(ProductRequest productRequest) {
+    public void create(ProductOrder productOrder) {
         gd.g
                 .V().hasLabel("Individual")
-                    .property("sub", productRequest.getUserSub())
+                    .property("sub", productOrder.getUserSub())
                 .as("individual")
                 .addV("AccountRequest")
-                    .property("address", productRequest.getAddress())
-                    .property("scheduledDate", productRequest.getScheduledDate())
-                    .property("status", productRequest.getStatus().getCode())
+                    .property("address", productOrder.getAddress())
+                    .property("scheduledDate", productOrder.getScheduledDate())
+                    .property("status", productOrder.getStatus().getCode())
                 .as("accountRequest")
                 .addE("requested")
                     .property("createdAt", new Date())
@@ -26,7 +26,7 @@ public class AccountRequestRepository extends AbstractRepository {
     public void confirm(long accountRequestId) {
         gd.g
                 .V(accountRequestId)
-                    .property("status", ProductRequest.ProductRequestStatus.IN_PROGRESS.getCode())
+                    .property("status", ProductOrder.ProductOrderStatus.IN_PROGRESS.getCode())
                 .next();
     }
 
@@ -34,7 +34,7 @@ public class AccountRequestRepository extends AbstractRepository {
 //        gd.g.tx().onReadWrite(Transaction.READ_WRITE_BEHAVIOR.AUTO).ro;
 //        gd.g
 //                .V(accountRequestId)
-//                    .property("status", ProductRequest.AccountRequestStatus.IN_PROGRESS.getCode())
+//                    .property("status", ProductOrder.AccountRequestStatus.IN_PROGRESS.getCode())
 //                .next();
 //    }
 }
