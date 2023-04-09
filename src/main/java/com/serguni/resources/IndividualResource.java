@@ -1,6 +1,6 @@
 package com.serguni.resources;
 
-import com.serguni.dto.RegistrationForm;
+import com.serguni.models.RegistrationForm;
 import com.serguni.exceptions.IndividualRegisteredAlready;
 import com.serguni.exceptions.InvalidRegistrationForm;
 import com.serguni.models.ProductOrder;

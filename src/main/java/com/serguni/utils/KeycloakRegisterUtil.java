@@ -1,7 +1,7 @@
 package com.serguni.utils;
 
 import com.serguni.clients.KeycloakAdminClient;
-import com.serguni.dto.RegistrationForm;
+import com.serguni.models.RegistrationForm;
 import com.serguni.exceptions.IndividualRegisteredAlready;
 import com.serguni.exceptions.RegistrationFailed;
 import com.serguni.vars.KeycloakProps;

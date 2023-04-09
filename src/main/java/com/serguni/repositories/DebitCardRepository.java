@@ -258,4 +258,15 @@ public class DebitCardRepository extends AbstractRepository {
                 .property("expiresAt", expirationDate)
                 .next();
     }
+
+    public Stream<String> getAllCardNumbersByUserSub(String userSub) {
+        return gd.g
+                .V()
+                .has(Individual.class.getSimpleName(), "sub", userSub)
+                .out("OWNS")
+                .hasLabel(DebitCard.class.getSimpleName())
+                .values("number")
+                .toStream()
+                .map((c) -> (String) c);
+    }
 }

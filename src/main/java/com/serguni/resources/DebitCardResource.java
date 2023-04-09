@@ -30,6 +30,7 @@ public class DebitCardResource {
     @GET
     @Path("/{card_number}/account_requisites")
     @RolesAllowed("admin")
+    @Produces(MediaType.APPLICATION_JSON)
     public Uni<AccountRequisites> getAccountRequisites(@PathParam("card_number") String cardNumber) {
         return Uni
                 .createFrom()
@@ -99,6 +100,19 @@ public class DebitCardResource {
 //                .map((e) -> Response.ok(e).build())
 //                .onFailure(NoSuchElementException.class)
 //                .recoverWithItem(Response.status(Response.Status.NOT_FOUND).build());
+    }
+
+
+    @GET
+    @Path("/search")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed("client")
+    public Uni<Response> getAllCardNumbersByUserSub(@QueryParam("user_sub") String userSub) {
+        return Uni.createFrom().item(
+                () -> Response.ok(
+                        debitCardService.getAllCardNumbersByUserSub(userSub)
+                ).build()
+        );
     }
 
 }

@@ -1,7 +1,6 @@
 package com.serguni.vars;
 
 import com.serguni.models.requisites.BIK;
-//import com.serguni.models.requisites.CorrespondAccount;
 
 public class MyBankVars {
     public static final BIK MY_BANK_BIK = new BIK(BIK.CountryCode.RUSSIA, BIK.RegionCode.MOSCOW, 66, 666);

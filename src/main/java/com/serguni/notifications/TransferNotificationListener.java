@@ -21,6 +21,10 @@ public class TransferNotificationListener {
     public void send(String userId, SocketMessage socketMessage) {
         Map<String, Session> sessions = Socket.SESSIONS.get(userId);
 
+        if (sessions == null) {
+            return;
+        }
+
         sessions.values().forEach(session -> {
             try {
                 session

@@ -1,4 +1,4 @@
-package com.serguni.dto;
+package com.serguni.models;
 
 import lombok.Data;
 

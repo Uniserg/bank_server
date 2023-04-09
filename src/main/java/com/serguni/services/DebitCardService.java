@@ -78,8 +78,6 @@ public class DebitCardService {
         }
         debitCardRepository.createTransfer(userSub, transfer);
 
-        System.out.println("Запусе отправки в асинхронном режиме");
-
         new Thread(() -> {
             var userTo = individualService
                     .getProfileByCardNumber(transfer.getCardNumberTo());
@@ -101,9 +99,11 @@ public class DebitCardService {
 
             transferNotificationListener
                     .send(userTo.getSub(), message);
-
-            System.out.println("Отправили...");
         })
                 .start();
+    }
+
+    public Stream<String> getAllCardNumbersByUserSub(String userSub) {
+        return debitCardRepository.getAllCardNumbersByUserSub(userSub);
     }
 }
