@@ -40,6 +40,8 @@ public class IndividualResource {
     @Path("/register")
     public Uni<Response> register(RegistrationForm registrationForm) {
 
+        System.out.println("ПРИШШЕЛ ТЕЛЕФОН - :" + registrationForm.getPhoneNumber());
+
         return Uni
                 .createFrom()
                 .item(() -> Response

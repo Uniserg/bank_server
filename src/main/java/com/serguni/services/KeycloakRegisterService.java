@@ -1,4 +1,4 @@
-package com.serguni.utils;
+package com.serguni.services;
 
 import com.serguni.clients.KeycloakAdminClient;
 import com.serguni.models.RegistrationForm;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.StringJoiner;
 
 @ApplicationScoped
-public class KeycloakRegisterUtil {
+public class KeycloakRegisterService {
 
     @Inject
     KeycloakAdminClient keycloakAdminClient;
@@ -71,7 +71,7 @@ public class KeycloakRegisterUtil {
         // Create user (requires manage-users role)
         try (Response response = usersResource.create(user)) {
             switch (response.getStatus()) {
-                case 201 -> {
+                case 201:
                     // TODO: рассмотреть варианты получше как достать id
                     String userId = response.getLocation().getPath().replaceAll(".*/([^/]+)$", "$1");
 
@@ -83,9 +83,10 @@ public class KeycloakRegisterUtil {
                             );
 
                     return userId;
-                }
-                case 409 -> throw new IndividualRegisteredAlready("User is registered already.");
-                default -> throw new RegistrationFailed("Register error. Code: " + response.getStatus());
+                case 409:
+                    throw new IndividualRegisteredAlready("User is registered already.");
+                default:
+                    throw new RegistrationFailed("Register error. Code: " + response.getStatus());
             }
         }
     }

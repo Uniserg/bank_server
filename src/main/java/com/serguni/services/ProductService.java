@@ -12,7 +12,7 @@ public class ProductService {
     @Inject
     ProductRepository productRepository;
 
-    public long create(Product product) {
+    public Product create(Product product) {
         return productRepository.create(product);
     }
 

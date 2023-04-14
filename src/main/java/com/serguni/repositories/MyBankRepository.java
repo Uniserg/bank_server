@@ -11,7 +11,7 @@ import static org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.*;
 public class MyBankRepository extends AbstractRepository {
 
     public void create(MyBank myBank) {
-        gd.g.addV("MyBank")
+        gd.g().addV("MyBank")
                 .property("name", myBank.getName())
                 .property("correspondAccount", myBank.getCorrespondAccount())
                 .property("bik", myBank.getBik())
@@ -22,7 +22,7 @@ public class MyBankRepository extends AbstractRepository {
     }
 
     public long incrAccountsCount() {
-        return (long) gd.g.V()
+        return (long) gd.g().V()
                 .hasLabel("MyBank")
                 .property("accountsCount",
                         union(values("accountsCount"), constant(1)).sum())
@@ -30,7 +30,7 @@ public class MyBankRepository extends AbstractRepository {
     }
 
     public MyBank getMyBank() {
-        var myBankMap = gd.g
+        var myBankMap = gd.g()
                 .V()
                 .hasLabel(MyBank.class.getSimpleName())
                 .elementMap()

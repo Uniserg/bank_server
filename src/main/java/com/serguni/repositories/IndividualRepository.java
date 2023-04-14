@@ -11,7 +11,7 @@ import javax.enterprise.context.ApplicationScoped;
 public class IndividualRepository extends AbstractRepository {
 
     public void create(Individual individual) {
-        gd.g
+        gd.g()
             .addV("Individual")
             .property("sub", individual.getSub())
             .property("lastName", individual.getLastName())
@@ -24,7 +24,7 @@ public class IndividualRepository extends AbstractRepository {
 
     public Individual getBySub(String individualSub) {
 
-        var individualMap = gd.g
+        var individualMap = gd.g()
                 .V()
                 .has("sub", individualSub)
                 .elementMap()
@@ -35,7 +35,7 @@ public class IndividualRepository extends AbstractRepository {
 
     private Individual findBy(String field, String value) {
 
-        var individualMap = gd.g
+        var individualMap = gd.g()
                 .V()
                 .has("Individual", field, value)
                 .elementMap().next();
@@ -53,7 +53,7 @@ public class IndividualRepository extends AbstractRepository {
 
     public Individual findByCardNumber(String cardNumber) {
 
-        var individualMap = gd.g
+        var individualMap = gd.g()
                 .V()
                 .has(DebitCard.class.getSimpleName(), "number", cardNumber)
                 .in("OWNS")

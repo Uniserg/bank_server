@@ -22,7 +22,7 @@ import static org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.select
 public class ProductOrderRepository extends  AbstractRepository {
 
     public long create(ProductOrder productOrder) {
-        return (long) gd.g
+        return (long) gd.g()
                 .V()
                     .hasLabel("Individual")
                     .has("sub", productOrder.getUserSub())
@@ -48,7 +48,7 @@ public class ProductOrderRepository extends  AbstractRepository {
 
     public Stream<ProductOrder> getAllByStatus(ProductOrder.ProductOrderStatus status, int skip, int limit) {
 
-        var traverse = gd.g.V()
+        var traverse = gd.g().V()
                 .match(
                         as("productOrder").has(ProductOrder.class.getSimpleName(), "status", status.getCode()),
                         as("productOrder").inE("MAKE_REQUEST").as("makeRequest"),
@@ -66,7 +66,7 @@ public class ProductOrderRepository extends  AbstractRepository {
 
     public Stream<ProductOrder> getAllByUserSub(String userSub, int skip, int limit) {
 
-        var traverse = gd.g.V()
+        var traverse = gd.g().V()
                 .match(
                         as("individual").has("Individual","sub", userSub),
                         as("individual").outE("MAKE_REQUEST").as("makeRequest"),
@@ -96,7 +96,7 @@ public class ProductOrderRepository extends  AbstractRepository {
     }
 
     public ProductOrder getById(long id) {
-        var traverse = gd.g
+        var traverse = gd.g()
                 .V(id).as("productOrder")
                 .match(
                     as("productOrder").inE("MAKE_REQUEST").as("makeRequest"),
@@ -108,14 +108,14 @@ public class ProductOrderRepository extends  AbstractRepository {
 
     public void confirm(long productOrderId) {
         // TODO: ПРОВЕРИТЬ ТЕКУЩИЙ СТАТУС
-        gd.g.V(productOrderId)
+        gd.g().V(productOrderId)
                 .property("status", ProductOrder.ProductOrderStatus.IN_PROGRESS.getCode())
                 .next();
     }
 
     public void refuse(long productOrderId) {
         // TODO: ПРОВЕРИТЬ ТЕКУЩИЙ СТАТУС
-        gd.g.V(productOrderId)
+        gd.g().V(productOrderId)
                 .property("status", ProductOrder.ProductOrderStatus.REFUSED.getCode())
                 .outE("RESERVES").as("reserves")
                 .inV().as("card")
@@ -129,7 +129,7 @@ public class ProductOrderRepository extends  AbstractRepository {
     }
 
     public void complete(long productOrderId) {
-        gd.g
+        gd.g()
                 .V(productOrderId).as("productOrder")
                 .property("status", ProductOrder.ProductOrderStatus.COMPLETED.getCode())
                 .match(

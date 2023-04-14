@@ -13,21 +13,23 @@ import static org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.*;
 @ApplicationScoped
 public class ProductRepository extends AbstractRepository {
 
-    public long create(Product product) {
+    public Product create(Product product) {
 
-        return (long) gd.g
+        return CamelCaseObjectMapperUtil.convertValue(
+                gd.g()
                 .addV(product.getClass().getSimpleName())
                     .property("name", product.getName())
                     .property("rate", product.getRate())
                     .property("description", product.getDescription())
                     .property("period", product.getPeriod())
                     .property("count", product.getCount())
-                .values(T.id.getAccessor())
-                .next();
+                .elementMap()
+                .next(), Product.class
+        );
     }
 
     public Stream<Product> getAll(int skip, int limit) {
-        return gd.g
+        return gd.g()
                 .V()
                 .hasLabel(Product.class.getSimpleName())
                 .skip(skip)
@@ -38,7 +40,7 @@ public class ProductRepository extends AbstractRepository {
     }
 
     public long incrCount(String name) {
-        return (long) gd.g.V().has(Product.class.getSimpleName(), "name", name)
+        return (long) gd.g().V().has(Product.class.getSimpleName(), "name", name)
                 .property("count", union(values("count"), constant(1)).sum())
                 .values("count")
                 .next();
@@ -46,7 +48,7 @@ public class ProductRepository extends AbstractRepository {
 
     public Product getByName(String name) {
 
-        var product = gd.g
+        var product = gd.g()
                 .V()
                 .has(Product.class.getSimpleName(), "name", name)
                 .elementMap()

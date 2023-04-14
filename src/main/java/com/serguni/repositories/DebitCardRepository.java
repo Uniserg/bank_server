@@ -33,7 +33,7 @@ public class DebitCardRepository extends AbstractRepository {
     MyBankRepository myBankRepository;
 
     public Stream<DebitCard> getAllByUserSub(String userSub, int skip, int limit) {
-        var cards = gd.g
+        var cards = gd.g()
                 .V()
                 .match(
                         as("individual").has(Individual.class.getSimpleName(), "sub", userSub),
@@ -56,7 +56,7 @@ public class DebitCardRepository extends AbstractRepository {
         return cards.map((c) -> CamelCaseObjectMapperUtil.convertValue(c, DebitCard.class));
     }
     public Account getAccountByNumber(String number) {
-        var accountMap = gd.g
+        var accountMap = gd.g()
                 .V()
                 .has(DebitCard.class.getSimpleName(), "number", number)
                 .out("MANAGES")
@@ -80,7 +80,7 @@ public class DebitCardRepository extends AbstractRepository {
     }
 
     public Account getAccount(String userSub, String cardNumber) {
-        var accountMap = gd.g
+        var accountMap = gd.g()
                 .V()
                 .match(
                         as("individual").has(Individual.class.getSimpleName(), "sub", userSub),
@@ -96,7 +96,7 @@ public class DebitCardRepository extends AbstractRepository {
     }
 
     public boolean isBalanceEnough(String cardNumber, float amount) {
-        float balance = (float) gd.g
+        float balance = (float) gd.g()
                 .V()
                 .has(DebitCard.class.getSimpleName(), "number", cardNumber)
                 .values("balance").next();
@@ -105,7 +105,7 @@ public class DebitCardRepository extends AbstractRepository {
     }
 
     public boolean isOwnedCard(String cardNumber, String userSub) {
-        return  gd.g
+        return  gd.g()
                 .V().match(
                 as("individual").has(Individual.class.getSimpleName(), "sub", userSub),
                 as("individual").out("OWNS")
@@ -115,7 +115,7 @@ public class DebitCardRepository extends AbstractRepository {
 
     public void createTransfer(String userSub, Transfer transfer) {
 //
-//        Transaction tx = gd.g.tx();
+//        Transaction tx = gd.g().tx();
 //
 //// spawn a GraphTraversalSource from the Transaction. Traversals spawned
 //// from gtx will be essentially be bound to tx
@@ -128,7 +128,7 @@ public class DebitCardRepository extends AbstractRepository {
 //            tx.rollback();
 //        }
 
-        gd.g
+        gd.g()
                 .V()
                     .has(Individual.class.getSimpleName(), "sub", userSub)
                 .as("individual")
@@ -159,7 +159,7 @@ public class DebitCardRepository extends AbstractRepository {
 
 
     public GraphTraversal<Vertex, Map<String, Object>> matchUserOwnsCard(String userSub, String cardNumber) {
-        return gd.g
+        return gd.g()
                 .V()
                 .match(
                         as("individual").out("OWNS").as("card"),
@@ -199,7 +199,7 @@ public class DebitCardRepository extends AbstractRepository {
 
 
     public long createNewCard(long productId, Account account, DebitCard card) {
-        return (long) gd.g
+        return (long) gd.g()
                 .V(productId).out("ASSOCIATED_WITH").as("product")
                 .addV("Account")
                     .property("number", account.getNumber().toString())
@@ -223,7 +223,7 @@ public class DebitCardRepository extends AbstractRepository {
 
     public long reserveFreeCard(String holderName, Date expirationDate) {
 
-        var t = gd.g
+        var t = gd.g()
                 .V()
                 .hasLabel("Free")
                 .inE("IN")
@@ -234,7 +234,7 @@ public class DebitCardRepository extends AbstractRepository {
 
         long cardId = (long) t.values(T.id.getAccessor()).next();
 
-        gd.g.V(cardId)
+        gd.g().V(cardId)
                 .property("holderName", holderName)
                 .property("expirationDate", expirationDate)
                 .outE("IN").drop().iterate();
@@ -248,7 +248,7 @@ public class DebitCardRepository extends AbstractRepository {
         c.add(Calendar.DAY_OF_MONTH, 7);
         Date expirationDate = c.getTime();
 
-        gd.g
+        gd.g()
                 .V(productRequestId).as("request")
                 .V(debitCardId).as("card")
                 .addE("RESERVES")
@@ -260,7 +260,7 @@ public class DebitCardRepository extends AbstractRepository {
     }
 
     public Stream<String> getAllCardNumbersByUserSub(String userSub) {
-        return gd.g
+        return gd.g()
                 .V()
                 .has(Individual.class.getSimpleName(), "sub", userSub)
                 .out("OWNS")

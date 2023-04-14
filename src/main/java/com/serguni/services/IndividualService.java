@@ -10,7 +10,6 @@ import com.serguni.models.Profile;
 import com.serguni.repositories.IndividualRepository;
 import com.serguni.utils.CamelCaseObjectMapperUtil;
 import com.serguni.utils.EmailValidationUtil;
-import com.serguni.utils.KeycloakRegisterUtil;
 import com.serguni.utils.PhoneValidationNumberUtil;
 import com.serguni.vars.KeycloakProps;
 
@@ -22,7 +21,7 @@ public class IndividualService {
     @Inject
     ObjectMapper om;
     @Inject
-    KeycloakRegisterUtil keycloakRegisterUtil;
+    KeycloakRegisterService keycloakRegisterService;
     @Inject
     IndividualRepository individualRepository;
 
@@ -64,7 +63,7 @@ public class IndividualService {
         if (!errMsg.isEmpty()) {
             throw new InvalidRegistrationForm(errMsg);
         }
-        String sub = keycloakRegisterUtil.register(registrationForm);
+        String sub = keycloakRegisterService.register(registrationForm);
 
         Individual individual = om.convertValue(registrationForm, Individual.class);
         individual.setSub(sub);

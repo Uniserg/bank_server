@@ -27,16 +27,6 @@ public class DebitCardResource {
     @Inject
     JsonWebToken jwt;
 
-    @GET
-    @Path("/{card_number}/account_requisites")
-    @RolesAllowed("admin")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Uni<AccountRequisites> getAccountRequisites(@PathParam("card_number") String cardNumber) {
-        return Uni
-                .createFrom()
-                .item(() -> debitCardService.getAccountRequisitesByNumber(cardNumber));
-    }
-
     @POST
     @Path("/transfer")
     @RolesAllowed("client")

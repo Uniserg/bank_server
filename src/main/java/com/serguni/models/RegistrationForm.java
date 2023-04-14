@@ -1,8 +1,14 @@
 package com.serguni.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class RegistrationForm {
     private String lastName;
     private String firstName;

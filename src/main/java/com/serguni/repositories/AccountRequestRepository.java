@@ -9,7 +9,7 @@ import java.util.Date;
 public class AccountRequestRepository extends AbstractRepository {
 
     public void create(ProductOrder productOrder) {
-        gd.g
+        gd.g()
                 .V().hasLabel("Individual")
                     .property("sub", productOrder.getUserSub())
                 .as("individual")
@@ -24,15 +24,15 @@ public class AccountRequestRepository extends AbstractRepository {
     }
 
     public void confirm(long accountRequestId) {
-        gd.g
+        gd.g()
                 .V(accountRequestId)
                     .property("status", ProductOrder.ProductOrderStatus.IN_PROGRESS.getCode())
                 .next();
     }
 
 //    public void complete(long accountRequestId) {
-//        gd.g.tx().onReadWrite(Transaction.READ_WRITE_BEHAVIOR.AUTO).ro;
-//        gd.g
+//        gd.g().tx().onReadWrite(Transaction.READ_WRITE_BEHAVIOR.AUTO).ro;
+//        gd.g()
 //                .V(accountRequestId)
 //                    .property("status", ProductOrder.AccountRequestStatus.IN_PROGRESS.getCode())
 //                .next();

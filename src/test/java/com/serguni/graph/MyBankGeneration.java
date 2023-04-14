@@ -9,12 +9,12 @@ import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
 
-@QuarkusTest
+//@QuarkusTest
 public class MyBankGeneration {
     @Inject
     MyBankRepository myBankRepository;
 
-    @Test
+//    @Test
     public void createMyBank() {
         MyBank myBank = new MyBank();
 
