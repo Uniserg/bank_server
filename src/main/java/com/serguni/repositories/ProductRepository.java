@@ -1,8 +1,8 @@
 package com.serguni.repositories;
 
+import com.serguni.exceptions.ConflictDataException;
 import com.serguni.models.Product;
 import com.serguni.utils.CamelCaseObjectMapperUtil;
-import org.apache.tinkerpop.gremlin.structure.T;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.util.stream.Stream;
@@ -14,6 +14,10 @@ import static org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.*;
 public class ProductRepository extends AbstractRepository {
 
     public Product create(Product product) {
+
+        if (gd.g().V().has(Product.class.getSimpleName()).hasNext()) {
+            throw new ConflictDataException("Product with name " + product + " already exists.");
+        }
 
         return CamelCaseObjectMapperUtil.convertValue(
                 gd.g()

@@ -1,9 +1,9 @@
 package com.serguni.services;
 
 import com.serguni.clients.KeycloakAdminClient;
-import com.serguni.models.RegistrationForm;
 import com.serguni.exceptions.IndividualRegisteredAlready;
 import com.serguni.exceptions.RegistrationFailed;
+import com.serguni.models.RegistrationForm;
 import com.serguni.vars.KeycloakProps;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UsersResource;

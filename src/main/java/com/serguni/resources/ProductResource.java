@@ -1,5 +1,6 @@
 package com.serguni.resources;
 
+import com.serguni.exceptions.ConflictDataException;
 import com.serguni.models.Product;
 import com.serguni.services.ProductService;
 import io.smallrye.mutiny.Multi;
@@ -24,7 +25,13 @@ public class ProductResource {
     @Produces(MediaType.WILDCARD)
     public Uni<Response> create(Product product) {
         return Uni.createFrom()
-                .item(() -> Response.ok(productService.create(product)).build());
+                .item(() -> Response.ok(productService.create(product)).build())
+                .onFailure(ConflictDataException.class)
+                .recoverWithItem(f ->
+                        Response
+                                .status(Response.Status.CONFLICT)
+                                .entity(f.getMessage())
+                                .build());
     }
 
     @GET

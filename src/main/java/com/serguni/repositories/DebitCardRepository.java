@@ -256,7 +256,7 @@ public class DebitCardRepository extends AbstractRepository {
                 .to("card")
                 .property("createdAt", new Date())
                 .property("expiresAt", expirationDate)
-                .next();
+                .iterate();
     }
 
     public Stream<String> getAllCardNumbersByUserSub(String userSub) {

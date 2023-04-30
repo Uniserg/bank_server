@@ -11,6 +11,10 @@ import static org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.*;
 public class MyBankRepository extends AbstractRepository {
 
     public void create(MyBank myBank) {
+        if (gd.g().V().hasLabel(MyBank.class.getSimpleName()).hasNext()) {
+            return;
+        }
+
         gd.g().addV("MyBank")
                 .property("name", myBank.getName())
                 .property("correspondAccount", myBank.getCorrespondAccount())

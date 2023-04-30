@@ -1,11 +1,7 @@
 package com.serguni.resources;
 
-import com.serguni.models.AccountRequisites;
 import com.serguni.models.Transfer;
-import com.serguni.notifications.TransferNotificationListener;
 import com.serguni.services.DebitCardService;
-import com.serguni.services.IndividualService;
-import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
@@ -15,7 +11,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Date;
-import java.util.Map;
 import java.util.NoSuchElementException;
 
 @Path("/debit_cards")
@@ -94,10 +89,10 @@ public class DebitCardResource {
 
 
     @GET
-    @Path("/search")
+    @Path("/search/{user_sub}")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed("client")
-    public Uni<Response> getAllCardNumbersByUserSub(@QueryParam("user_sub") String userSub) {
+    public Uni<Response> getAllCardNumbersByUserSub(@PathParam("user_sub") String userSub) {
         return Uni.createFrom().item(
                 () -> Response.ok(
                         debitCardService.getAllCardNumbersByUserSub(userSub)

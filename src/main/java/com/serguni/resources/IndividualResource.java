@@ -1,9 +1,9 @@
 package com.serguni.resources;
 
-import com.serguni.models.RegistrationForm;
 import com.serguni.exceptions.IndividualRegisteredAlready;
 import com.serguni.exceptions.InvalidRegistrationForm;
 import com.serguni.models.ProductOrder;
+import com.serguni.models.RegistrationForm;
 import com.serguni.services.DebitCardService;
 import com.serguni.services.IndividualService;
 import com.serguni.services.ProductOrderService;

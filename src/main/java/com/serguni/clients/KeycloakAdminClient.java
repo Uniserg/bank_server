@@ -3,12 +3,10 @@ package com.serguni.clients;
 import com.serguni.vars.KeycloakProps;
 import org.keycloak.admin.client.Keycloak;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-//@Singleton
-@ApplicationScoped
+@Singleton
 public class KeycloakAdminClient {
     @Inject
     KeycloakProps keycloakProps;

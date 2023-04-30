@@ -7,7 +7,6 @@ import com.serguni.models.SocketMessage;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.websocket.Session;
-import java.io.IOException;
 import java.util.Map;
 
 @ApplicationScoped

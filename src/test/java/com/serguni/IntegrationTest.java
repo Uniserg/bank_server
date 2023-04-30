@@ -1,4 +1,4 @@
-package com.serguni.resources;
+package com.serguni;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -7,10 +7,13 @@ import com.serguni.clients.GraphDriver;
 import com.serguni.clients.KeycloakAdminClient;
 import com.serguni.models.*;
 import com.serguni.repositories.MyBankRepository;
+import com.serguni.vars.KeycloakProps;
 import com.serguni.vars.MyBankVars;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import javax.inject.Inject;
 
@@ -18,13 +21,19 @@ import java.util.Date;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
+import static org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.addV;
+import static org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.unfold;
 
 
 @QuarkusTest
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class IntegrationTest {
 
     @Inject
     KeycloakAdminClient keycloakAdminClient;
+
+    @Inject
+    KeycloakProps keycloakProps;
 
     @Inject
     ObjectMapper om;
@@ -39,20 +48,14 @@ class IntegrationTest {
 
     String testUserAccessToken;
 
+    String testUserSub;
+
     Product createProduct() throws JsonProcessingException {
         Product product = new Product();
         product.setName("Test Debit Card");
         product.setDescription("Test Debit Card");
         product.setRate(60);
         product.setPeriod((byte) 4);
-
-        System.out.println(given()
-                .when().contentType(ContentType.JSON)
-                .auth().oauth2(adminAccessToken)
-                .body(om.writeValueAsString(product))
-                .post("/products")
-                .then()
-                .extract().body().asString());
 
         return om.readValue(
                 given()
@@ -191,10 +194,12 @@ class IntegrationTest {
     }
 
     List<String> getAllCardNumbersByUserSub(String userSub) throws JsonProcessingException {
+
         return om.readValue(
                 given()
                 .when()
                 .auth().oauth2(testUserAccessToken)
+                        .contentType(ContentType.JSON)
                 .get("/debit_cards/search/" + userSub)
                 .then()
                         .extract().body().asString(),
@@ -223,60 +228,79 @@ class IntegrationTest {
         given()
                 .when()
                 .auth().oauth2(testUserAccessToken)
-                .contentType(ContentType.JSON)
                 .body(om.writeValueAsString(cardNumber))
-                .post("/debit_cards/" + cardNumber + "/account_operations")
+                .get("/debit_cards/" + cardNumber + "/account_operations")
                 .then()
                 .statusCode(200);
     }
 
-    @Test
-    void test() throws JsonProcessingException {
+    void init() {
+        gd.g().V().hasLabel("Free").fold().coalesce(unfold(), addV("Free")).iterate();
 
-        MyBank myBank = new MyBank();
-
-        myBank.setBik(MyBankVars.MY_BANK_BIK.toString());
-        myBank.setName("My bank");
-        myBank.setKpp("302102");
-        myBank.setCorrespondAccount("091831903813902379");
-        myBank.setAccountsCount(0);
+        MyBank myBank = MyBank
+                .builder()
+                .bik(MyBankVars.MY_BANK_BIK.toString())
+                .name("My bank")
+                .inn("9292929282")
+                .kpp("302102")
+                .correspondAccount("30233810204000100000")
+                .build();
 
         myBankRepository.create(myBank);
+    }
 
+    void deposit(String cardNumber, double amount) {
+        gd.
+                g().V()
+                .has(DebitCard.class.getSimpleName(), "number", cardNumber)
+                .out("MANAGES")
+                .property("balance", amount)
+                .iterate();
+    }
+
+
+    void run() throws JsonProcessingException {
         adminAccessToken = keycloakAdminClient.getAccessToken("admin", "admin");
         Product product = createProduct();
         getAllProducts();
         Individual individual = register();
         testUserAccessToken = keycloakAdminClient.getAccessToken("test", "test");
+        testUserSub = individual.getSub();
         ProductOrder productOrderIdForComplete1 = createProductOrder(product.getName());
         ProductOrder productOrderIdForComplete2 = createProductOrder(product.getName());
         ProductOrder productOrderIdForRefuse = createProductOrder(product.getName());
         getProductOrders();
-
         confirm(productOrderIdForComplete1.getId());
         complete(productOrderIdForComplete1.getId());
-
         confirm(productOrderIdForComplete2.getId());
         complete(productOrderIdForComplete2.getId());
-
         confirm(productOrderIdForRefuse.getId());
         refuse(productOrderIdForRefuse.getId());
-
         List<DebitCard> cards = getDebitCards();
         getAccountRequisites(cards.get(0).getNumber());
         getProfileByPhoneNumber(individual.getPhoneNumber());
         getProfileByCardNumber(cards.get(0).getNumber());
         List<String> cardNumbers = getAllCardNumbersByUserSub(individual.getSub());
-
-
-        gd
-                .g().V()
-                .has(DebitCard.class.getSimpleName(), "number", cards.get(0).getNumber())
-                .out("MANAGES")
-                .property("balance", 100)
-                .elementMap().next();
-
+        deposit(cards.get(0).getNumber(), 100);
         createTransfer(cardNumbers.get(0), cardNumbers.get(1));
         getAllTransfers(cardNumbers.get(0));
+    }
+
+    @Test
+    void test() throws JsonProcessingException {
+        init();
+        run();
+    }
+
+    @AfterAll
+    void clean() {
+        gd.g().V().drop().iterate();
+
+        keycloakAdminClient
+                .getKeycloak()
+                .realm(keycloakProps.realm())
+                .users().delete(testUserSub).close();
+
+        init();
     }
 }

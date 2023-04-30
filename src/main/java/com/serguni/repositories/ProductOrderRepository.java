@@ -1,7 +1,5 @@
 package com.serguni.repositories;
 
-import com.serguni.models.Account;
-import com.serguni.models.DebitCard;
 import com.serguni.models.ProductOrder;
 import com.serguni.utils.CamelCaseObjectMapperUtil;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
@@ -138,6 +136,7 @@ public class ProductOrderRepository extends  AbstractRepository {
                         as("productOrder").in("MAKE_REQUEST").as("individual")
                 )
                 .addE("OWNS")
+                .property("createdAt", new Date())
                 .from("individual")
                 .to("card")
                 .select("reserves").drop()
