@@ -12,6 +12,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Account {
     private CurrentAccount number;
-    private float balance;
+    private double balance;
     private boolean isActive;
 }

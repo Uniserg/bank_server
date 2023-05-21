@@ -11,7 +11,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class TransferNotification {
     private Date createdAt;
-    private float amount;
+    private double amount;
     private String message;
     private String userSubFrom;
     private String cardNumberFrom4Postfix;

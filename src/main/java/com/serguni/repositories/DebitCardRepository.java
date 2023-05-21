@@ -73,7 +73,7 @@ public class DebitCardRepository extends AbstractRepository {
         CurrentAccount accountNumber = CurrentAccount.parse((String) accountMap.get("number"), bik);
 
         account.setNumber(accountNumber);
-        account.setBalance((Float) accountMap.get("balance"));
+        account.setBalance((Double) accountMap.get("balance"));
         account.setActive((Boolean) accountMap.get("isActive"));
 
         return account;
@@ -95,8 +95,8 @@ public class DebitCardRepository extends AbstractRepository {
         return getAccount(accountMap);
     }
 
-    public boolean isBalanceEnough(String cardNumber, float amount) {
-        float balance = (float) gd.g()
+    public boolean isBalanceEnough(String cardNumber, double amount) {
+        double balance = (double) gd.g()
                 .V()
                 .has(DebitCard.class.getSimpleName(), "number", cardNumber)
                 .values("balance").next();

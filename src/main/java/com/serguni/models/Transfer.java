@@ -9,7 +9,7 @@ import java.util.Date;
 @Setter
 public class Transfer {
     private Date createdAt;
-    private float amount;
+    private double amount;
     private String sessionSub;
     private String message;
     private String cardNumberFrom;

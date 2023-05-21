@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 public class Product {
     private String name;
-    private float rate;
+    private double rate;
     private byte[] logo;
     private String description;
     private byte period;

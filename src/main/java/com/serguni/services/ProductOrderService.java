@@ -107,7 +107,7 @@ public class ProductOrderService {
                         CurrentAccount.UnitCode.RUR,
                         productService.incrCount(productName),
                         MyBankVars.MY_BANK_BIK),
-                0f,
+                0,
                 false
         );
 

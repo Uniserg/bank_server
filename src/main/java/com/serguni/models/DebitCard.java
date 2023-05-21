@@ -18,7 +18,7 @@ public class DebitCard {
     private boolean isActive;
     private String productName;
 
-    private float balance;
+    private double balance;
 
     public DebitCard() {
     }
