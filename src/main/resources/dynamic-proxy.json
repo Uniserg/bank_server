@@ -1,0 +1,4 @@
+[
+  {"interfaces":  ["org.apache.tinkerpop.gremlin.driver.Channelizer"]},
+  {"interfaces":  ["org.apache.tinkerpop.gremlin.process.remote.RemoteConnection"]}
+]
